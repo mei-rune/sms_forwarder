@@ -16,11 +16,14 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created on 2016/2/24.
  */
 public class Program implements Closeable {
+    private static final Logger logger = LoggerFactory.getLogger("[sms]");
     private static final Charset utf8_charset = Charset.forName("utf-8");
     private final Connection connection;
     private final String table;
@@ -73,6 +76,8 @@ public class Program implements Closeable {
                 HttpClientBuilder.create()
                 .useSystemProperties()
                 .build());
+
+        logger.info("start ok.");
         try {
             //noinspection InfiniteLoopStatement
             for (; ; ) {
@@ -104,9 +109,11 @@ public class Program implements Closeable {
                 count ++;
                 boolean sendOk = false;
                 try {
+                    logger.info("send message " + Integer.toString(msg.getId()));
                     sendMessage(msg);
                     sendOk = true;
                 } catch (Exception e) {
+                    logger.info("failed to send message " + Integer.toString(msg.getId()), e);
                     saveError(msg, e);
                 }
                 if(sendOk) {

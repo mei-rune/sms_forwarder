@@ -11,6 +11,3 @@ publish
 logs
 .idea
 *.iml
-all.txt
-all_j2ee.txt
-websphere_all.txt
