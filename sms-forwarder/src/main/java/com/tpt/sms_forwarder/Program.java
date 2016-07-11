@@ -67,6 +67,15 @@ public class Program implements Closeable {
         String table = Enforce.ThrowIfNullOrEmpty(props.getProperty("dbTable"), "db table is empty.");
         String smsUrl= Enforce.ThrowIfNullOrEmpty(props.getProperty("smsUrl"), "sms url is empty.");
 
+        int interval = 1000;
+        try {
+            String s = props.getProperty("poll_interval");
+            if(null != s && !s.isEmpty()) {
+                interval = Integer.parseInt(s);
+            }
+        } catch (NumberFormatException e){
+            interval = 1000;
+        }
         String query = "SELECT id, phone, message, max_retries, retries FROM " + table + " WHERE send_at IS NULL AND (max_retries IS NULL OR retries IS NULL OR max_retries > retries)";
         if(!DbUtils.loadDriver(driverClass)) {
             throw new RuntimeException("'"+driverClass+"' is not found.");
@@ -82,7 +91,7 @@ public class Program implements Closeable {
             //noinspection InfiniteLoopStatement
             for (; ; ) {
                 if (program.run(query) == 0) {
-                    Thread.sleep(1000);
+                    Thread.sleep(interval);
                 }
             }
         } catch (InterruptedException e) {
