@@ -72,6 +72,9 @@ public class Program implements Closeable {
             String s = props.getProperty("poll_interval");
             if(null != s && !s.isEmpty()) {
                 interval = Integer.parseInt(s);
+                if(interval < 10) {
+                    interval = 10;
+                }
             }
         } catch (NumberFormatException e){
             interval = 1000;
