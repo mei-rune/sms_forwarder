@@ -1,0 +1,23 @@
+1. 创建表
+
+drop table tpt_sms_forwarder;
+
+create table tpt_sms_forwarder (
+  id            integer  not null primary key,
+  phone         varchar(50) not null,
+  message       varchar(100)  not null,
+  max_retries   integer  not null,
+  retries       integer,
+  last_error    varchar(200),
+  failed_at     DATE,
+  send_at       DATE
+);
+
+create sequence sms_message_id_seq minvalue 1 maxvalue 999999999999 increment by 1 start with 4;
+
+
+
+2. 插入数据来测试
+insert into tpt_sms_forwarder(id, phone, message, max_retries) values(sms_message_id_seq.nextval, '123', '中文.', 3);
+
+select * FROM  TPT_SMS_FORWARDER;
